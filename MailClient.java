@@ -32,7 +32,7 @@ public class MailClient {
 		
 		
 		
-		//from sigClient.java
+
 
 		String userPrivateKeyFileName = userid + ".prv";
 		// Get the key to create the signature
@@ -63,7 +63,7 @@ public class MailClient {
         out.write(signature);
         out.flush();
 
-        //end from sigClient.java
+        //end from sig
 
 
 
@@ -76,7 +76,12 @@ public class MailClient {
 		System.out.println("You have " + numMsg + " incoming messages.");
 
 		// TO DO: read messages
-
+		ArrayList<Mail> msg = new ArrayList<>(numMsg);
+		for(int i=1;i<=numMsg;i++)
+		{
+			msg.get(i);
+		}
+		//ois.readObject(msg.get());
 
 		
 		
