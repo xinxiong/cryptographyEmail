@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.security.*;
 
@@ -71,16 +72,39 @@ public class MailServer {
 
 	}  // end main
 
-	public static boolean verifyLogin(DataInputStream dis, String userid) {
+	public static boolean verifyLogin(DataInputStream dis, String userid) throws Exception {
 
 		// TO DO
 		
-		
-		
-		
-		
+		// receive data and signature
+        
+        long t1 = dis.readLong();
+        double q1 = dis.readDouble();
+        int length = dis.readInt();
+        byte[] signature = new byte[length];
+        dis.readFully(signature);
 
+		// ByteBuffer to convert to bytes later
+		ByteBuffer bb = ByteBuffer.allocate(16);
+		bb.putLong(t1);
+		bb.putDouble(q1);
 
+        // should actually retrieve the appropriate key file using the received user name. For simplicity, hardcoded here
+        ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream("public.key"));
+        PublicKey publicKey = (PublicKey)keyIn.readObject();
+        keyIn.close();
+
+        // verify signature
+        Signature sig = Signature.getInstance("SHA-1");
+        sig.initVerify(publicKey);
+        sig.update(bb.array());
+
+        if (sig.verify(signature))
+            System.out.println("Client logged in");
+        else
+            System.out.println("Client failed to log in");
+		
+		
 
 		return true; // stub
 	}
