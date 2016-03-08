@@ -88,9 +88,11 @@ public class MailServer {
 		ByteBuffer bb = ByteBuffer.allocate(16);
 		bb.putLong(t1);
 		bb.putDouble(q1);
+		
 
         // should actually retrieve the appropriate key file using the received user name. For simplicity, hardcoded here
-        ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream("public.key"));
+        String userPublicKeyFileName = userid + ".pub";
+		ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream(userPublicKeyFileName));
         PublicKey publicKey = (PublicKey)keyIn.readObject();
         keyIn.close();
 
@@ -98,15 +100,23 @@ public class MailServer {
         Signature sig = Signature.getInstance("SHA-1");
         sig.initVerify(publicKey);
         sig.update(bb.array());
-
-        if (sig.verify(signature))
+        
+        // verify timeSpan
+		// server local timeStamp
+		long t2 = (new Date()).getTime();
+		long timeSpan = t2 - t1;
+		boolean timeFresh = false;
+		if (timeSpan < 60000)
+			timeFresh = true;
+		
+		//final check
+        if (sig.verify(signature)&&timeFresh){
             System.out.println("Client logged in");
-        else
+            return true;}
+        else{
             System.out.println("Client failed to log in");
-		
-		
-
-		return true; // stub
+            return false;}
+		 
 	}
 
 }  // end class
