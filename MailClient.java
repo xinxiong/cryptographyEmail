@@ -5,10 +5,14 @@ import java.util.*;
 import java.security.*;
 
 public class MailClient {
+	
+	public String getMessage(Mail m){
+		return m.message;
+	}
 
 	public static void main(String[] args) throws Exception {
 
-		// initialization
+		// Initialisation
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		String host = args[0];
@@ -80,6 +84,7 @@ public class MailClient {
 		for(int i=1;i<=numMsg;i++)
 		{
 			msg.get(i);
+			msg.remove(i);
 		}
 		//ois.readObject(msg.get());
 
