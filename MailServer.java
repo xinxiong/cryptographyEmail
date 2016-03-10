@@ -65,7 +65,7 @@ public class MailServer {
 				// replaces old entry in hashmap, if any
 
 			}
-
+			ss.close();
 			s.close();
 
 		}  // end while
