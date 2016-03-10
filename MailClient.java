@@ -55,14 +55,13 @@ public class MailClient {
 	        byte[] signature = sig.sign();
 	
 	        // send data and signature
-	        DataOutputStream out = new DataOutputStream(s.getOutputStream());
-	        out.writeUTF(userid);
-	        out.writeLong(t1);
-	        out.writeDouble(q1);
-	        out.writeInt(signature.length);
+	        dos.writeUTF(userid);
+	        dos.writeLong(t1);
+	        dos.writeDouble(q1);
+	        dos.writeInt(signature.length);
 	        System.out.println("in the client,the length of signature is :"+signature.length);
-	        out.write(signature);
-	        out.flush();
+	        dos.write(signature);
+	        dos.flush();
 	        
 	        System.out.println("position1");
 
@@ -132,11 +131,11 @@ public class MailClient {
 					
 				}
 				
-				out.write(digest);
-				out.flush();
+				dos.write(digest);
+				dos.flush();
 				// send timeStamp and digest to server
 				long mailTimestamp = m.timestamp.getTime();
-				out.writeLong(mailTimestamp);
+				dos.writeLong(mailTimestamp);
 				
 
 
