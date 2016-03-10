@@ -19,7 +19,7 @@ public class MailClient {
 		int port = Integer.parseInt(args[1]);
 		String userid = args[2];
 		
-		while(true) {
+		
 			// connect to server
 			Socket s = new Socket(host,port);
 			DataInputStream dis = new DataInputStream(s.getInputStream());
@@ -42,28 +42,29 @@ public class MailClient {
 	        
 	        // create timeStamp and random number
 	        long t1 = (new Date()).getTime();
-	        double q1 = Math.random();
+	        //double q1 = Math.random();
 	        // ByteBuffer to convert to bytes later
 	        ByteBuffer bb = ByteBuffer.allocate(16);
 	        bb.putLong(t1);
-	        bb.putDouble(q1);
+	        bb.put(userid.getBytes());
+	        //bb.putDouble(q1);
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("NONEwithRSA");
+	        Signature sig = Signature.getInstance("SHA1withRSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
 	
 	        // send data and signature
-	        dos.writeUTF(userid);
+	        //dos.writeUTF(userid);
 	        dos.writeLong(t1);
-	        dos.writeDouble(q1);
+	        //dos.writeDouble(q1);
 	        dos.writeInt(signature.length);
 	        System.out.println("in the client,the length of signature is :"+signature.length);
 	        dos.write(signature);
 	        dos.flush();
 	        
-	        System.out.println("position1");
+	        System.out.println("client position1");
 
 			boolean answer = dis.readBoolean();
 			
@@ -146,7 +147,7 @@ public class MailClient {
 			else{
 				System.out.println("failed to login");
 			}
-			}
+			
 			
 
 	}
