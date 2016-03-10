@@ -49,7 +49,7 @@ public class MailClient {
 	        bb.putDouble(q1);
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("SHA-1");
+	        Signature sig = Signature.getInstance("RSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
