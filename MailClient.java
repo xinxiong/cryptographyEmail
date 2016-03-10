@@ -49,7 +49,7 @@ public class MailClient {
 	        bb.putDouble(q1);
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("RSA");
+	        Signature sig = Signature.getInstance("SHA256withRSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
@@ -137,6 +137,9 @@ public class MailClient {
 				oos.writeObject(m);
 				
 				}
+			else{
+				System.out.println("failed to login");
+			}
 			}
 			
 
