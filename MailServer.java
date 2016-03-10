@@ -81,9 +81,12 @@ public class MailServer {
         long t1 = dis.readLong();
         double q1 = dis.readDouble();
         int length = dis.readInt();
+        System.out.println("in the server,the length of signature is:"+length);
         byte[] signature = new byte[length];
+        System.out.println("verifying for clientid is:"+userid);
         dis.readFully(signature);
-
+        System.out.println("Server position2");
+        
 		// ByteBuffer to convert to bytes later
 		ByteBuffer bb = ByteBuffer.allocate(16);
 		bb.putLong(t1);
@@ -97,7 +100,7 @@ public class MailServer {
         keyIn.close();
 
         // verify signature
-        Signature sig = Signature.getInstance("RSA");
+        Signature sig = Signature.getInstance("NONEwithRSA");
         sig.initVerify(publicKey);
         sig.update(bb.array());
         

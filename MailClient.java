@@ -49,7 +49,7 @@ public class MailClient {
 	        bb.putDouble(q1);
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("SHA256withRSA");
+	        Signature sig = Signature.getInstance("NONEwithRSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
@@ -60,14 +60,20 @@ public class MailClient {
 	        out.writeLong(t1);
 	        out.writeDouble(q1);
 	        out.writeInt(signature.length);
+	        System.out.println("in the client,the length of signature is :"+signature.length);
 	        out.write(signature);
 	        out.flush();
-	
+	        
+	        System.out.println("position1");
+
 			boolean answer = dis.readBoolean();
 			
+			System.out.println("position2");
+			System.out.println(answer);
 			//passed the verifyLogin
 			if (answer)
 				{
+				System.out.println("position3");
 				// receive how many messages
 				int numMsg = dis.readInt();
 				System.out.println("You have " + numMsg + " incoming messages.");
@@ -79,6 +85,7 @@ public class MailClient {
 					msg = (ArrayList<Mail>) ois.readObject();
 				}
 				while(!msg.isEmpty()){
+					System.out.println("position4");
 					//for each mail, display sender,timestamp,message
 					System.out.println(msg.get(0).sender);
 					System.out.println(msg.get(0).timestamp);
