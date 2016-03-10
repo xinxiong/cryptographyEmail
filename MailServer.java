@@ -65,7 +65,7 @@ public class MailServer {
 				// replaces old entry in hashmap, if any
 
 			}
-
+			ss.close();
 			s.close();
 
 		}  // end while
@@ -97,7 +97,7 @@ public class MailServer {
         keyIn.close();
 
         // verify signature
-        Signature sig = Signature.getInstance("SHA-1");
+        Signature sig = Signature.getInstance("RSA");
         sig.initVerify(publicKey);
         sig.update(bb.array());
         

@@ -49,7 +49,7 @@ public class MailClient {
 	        bb.putDouble(q1);
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("SHA-1");
+	        Signature sig = Signature.getInstance("SHA256withRSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
@@ -83,14 +83,17 @@ public class MailClient {
 					System.out.println(msg.get(0).sender);
 					System.out.println(msg.get(0).timestamp);
 					System.out.println(msg.get(0).message);
-					byte[] localHashcash = msg.get(0).hashcash;
+					MessageDigest md = MessageDigest.getInstance("SHA-1");
+					md.update(msg.get(0).hashcash);
+					
+					byte[] digest = md.digest();
+					boolean normalMail = msg.get(0).checkHashcash(digest);
+					if(normalMail){
 					//check each mail is original that it isn't modified
 					//receive mail
-					byte[] mailHashcash = msg.get(0).hashcash;
-					if (localHashcash == mailHashcash){
 						System.out.println(msg.get(0).message);
 						}
-					else{System.out.println("not original message.");
+					else{System.out.println("it's a spam message.");
 						System.out.println(msg.get(0).message);
 						}
 					msg.remove(0);
@@ -115,19 +118,28 @@ public class MailClient {
 				Mail m = new Mail(userid, recipient, message);
 				MessageDigest md = MessageDigest.getInstance("SHA-1");
 				md.update(m.hashcash);
+				
 				byte[] digest = md.digest();
-
+				while(m.checkHashcash(digest)){
+					m.setHashcash(digest);
+					
+				}
+				
+				out.write(digest);
+				out.flush();
 				// send timeStamp and digest to server
 				long mailTimestamp = m.timestamp.getTime();
 				out.writeLong(mailTimestamp);
-				out.write(digest);
-				out.flush();
+				
 
 
 				
 				oos.writeObject(m);
 				
 				}
+			else{
+				System.out.println("failed to login");
+			}
 			}
 			
 
