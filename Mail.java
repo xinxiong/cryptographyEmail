@@ -9,6 +9,7 @@ public class Mail implements Serializable {
 	public Date timestamp;
 	public String message;
 	public byte[] hashcash; // 4-byte array
+	int count = 0;
 
 	// constructor
 	public Mail(String s, String r, String m) {
@@ -20,7 +21,8 @@ public class Mail implements Serializable {
 	}
 	
 	public void setHashcash(byte[] digest){
-		hashcash = new byte[4];
+		this.hashcash = new byte[4];
+		//this.hashcash += ;
 	}
 	public boolean checkHashcash(byte[] digest){
 		if (digest[0]==0 && digest[1] == 0)
