@@ -8,6 +8,7 @@ public class MailServer {
 
 	public static void main(String[] args) throws Exception {
 
+		System.out.println("Welcome...");
 		int port = Integer.parseInt(args[0]);
 		ServerSocket ss = new ServerSocket(port);
 
@@ -79,15 +80,19 @@ public class MailServer {
 		// receive data and signature
         
         long t1 = dis.readLong();
-        double q1 = dis.readDouble();
+        //double q1 = dis.readDouble();
         int length = dis.readInt();
+        System.out.println("in the server,the length of signature is:"+length);
         byte[] signature = new byte[length];
+        System.out.println("verifying for clientid is:"+userid);
         dis.readFully(signature);
-
+        System.out.println("Server position2");
+        
 		// ByteBuffer to convert to bytes later
 		ByteBuffer bb = ByteBuffer.allocate(16);
+		bb.put(userid.getBytes());
 		bb.putLong(t1);
-		bb.putDouble(q1);
+
 		
 
         // should actually retrieve the appropriate key file using the received user name. For simplicity, hardcoded here
@@ -97,7 +102,7 @@ public class MailServer {
         keyIn.close();
 
         // verify signature
-        Signature sig = Signature.getInstance("RSA");
+        Signature sig = Signature.getInstance("SHA1withRSA");
         sig.initVerify(publicKey);
         sig.update(bb.array());
         
@@ -110,8 +115,17 @@ public class MailServer {
 			timeFresh = true;
 		
 		//final check
-        if (sig.verify(signature)&&timeFresh){
+        /*if (sig.verify(signature)&&timeFresh){
             System.out.println("Client logged in");
+            return true;}
+        else{
+            System.out.println("Client failed to log in");
+            return false;}*/
+        if (sig.verify(signature)){
+            System.out.println("signature is right");
+            if(timeFresh){
+               System.out.println("timespan is fresh");	
+            }
             return true;}
         else{
             System.out.println("Client failed to log in");

@@ -19,7 +19,7 @@ public class MailClient {
 		int port = Integer.parseInt(args[1]);
 		String userid = args[2];
 		
-		while(true) {
+		
 			// connect to server
 			Socket s = new Socket(host,port);
 			DataInputStream dis = new DataInputStream(s.getInputStream());
@@ -42,32 +42,32 @@ public class MailClient {
 	        
 	        // create timeStamp and random number
 	        long t1 = (new Date()).getTime();
-	        double q1 = Math.random();
 	        // ByteBuffer to convert to bytes later
 	        ByteBuffer bb = ByteBuffer.allocate(16);
 	        bb.putLong(t1);
-	        bb.putDouble(q1);
+	        bb.put(userid.getBytes());
+
 	
 	        // create signature, using timeStamp and random number as data
-	        Signature sig = Signature.getInstance("SHA256withRSA");
+	        Signature sig = Signature.getInstance("SHA1withRSA");
 	        sig.initSign(privateKey);
 	        sig.update(bb.array());
 	        byte[] signature = sig.sign();
 	
 	        // send data and signature
-	        DataOutputStream out = new DataOutputStream(s.getOutputStream());
-	        out.writeUTF(userid);
-	        out.writeLong(t1);
-	        out.writeDouble(q1);
-	        out.writeInt(signature.length);
-	        out.write(signature);
-	        out.flush();
-	
+	        dos.writeLong(t1);
+	        dos.writeInt(signature.length);
+	        System.out.println("in the client,the length of signature is :"+signature.length);
+	        dos.write(signature);
+	        dos.flush();
+
 			boolean answer = dis.readBoolean();
 			
+			System.out.println(answer);
 			//passed the verifyLogin
 			if (answer)
 				{
+				System.out.println("position3");
 				// receive how many messages
 				int numMsg = dis.readInt();
 				System.out.println("You have " + numMsg + " incoming messages.");
@@ -79,7 +79,8 @@ public class MailClient {
 					msg = (ArrayList<Mail>) ois.readObject();
 				}
 				while(!msg.isEmpty()){
-					//for each mail, display sender,timestamp,message
+					System.out.println("position4");
+					//for each mail, display sender,timeStamp,message
 					System.out.println(msg.get(0).sender);
 					System.out.println(msg.get(0).timestamp);
 					System.out.println(msg.get(0).message);
@@ -89,7 +90,7 @@ public class MailClient {
 					byte[] digest = md.digest();
 					boolean normalMail = msg.get(0).checkHashcash(digest);
 					if(normalMail){
-					//check each mail is original that it isn't modified
+					//check each mail is belongs to SPAM or not
 					//receive mail
 						System.out.println(msg.get(0).message);
 						}
@@ -125,22 +126,19 @@ public class MailClient {
 					
 				}
 				
-				out.write(digest);
-				out.flush();
+				dos.write(digest);
+				dos.flush();
 				// send timeStamp and digest to server
 				long mailTimestamp = m.timestamp.getTime();
-				out.writeLong(mailTimestamp);
-				
+				dos.writeLong(mailTimestamp);
 
-
-				
 				oos.writeObject(m);
 				
 				}
 			else{
 				System.out.println("failed to login");
 			}
-			}
+			
 			
 
 	}
