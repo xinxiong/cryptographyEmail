@@ -115,15 +115,19 @@ public class MailClient {
 		
 				// TO DO: send mail
 				Mail m = new Mail(userid, recipient, message);
+				//create digest
+				bb.putLong(m.timestamp.getTime());//store sender's timeStamp
 				MessageDigest md = MessageDigest.getInstance("SHA-1");
+				md.update(m.recipient.getBytes());
+				md.update(bb.array());
 				md.update(m.hashcash);
-				
 				byte[] digest = md.digest();
-				while(m.checkHashcash(digest)){
+				
+				while(!m.checkHashcash(digest)){
 					m.setHashcash(digest);
 					
 				}
-				
+				System.out.println("HashCash is equal now");
 				dos.write(digest);
 				dos.flush();
 				// send timeStamp and digest to server
