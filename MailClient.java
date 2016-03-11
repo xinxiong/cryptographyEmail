@@ -44,9 +44,8 @@ public class MailClient {
 	        long t1 = (new Date()).getTime();
 	        // ByteBuffer to convert to bytes later
 	        ByteBuffer bb = ByteBuffer.allocate(16);
-	        bb.putLong(t1);
 	        bb.put(userid.getBytes());
-
+	        bb.putLong(t1);
 	
 	        // create signature, using timeStamp and random number as data
 	        Signature sig = Signature.getInstance("SHA1withRSA");
@@ -63,11 +62,10 @@ public class MailClient {
 
 			boolean answer = dis.readBoolean();
 			
-			System.out.println(answer);
+			System.out.println("You have logged in now");
 			//passed the verifyLogin
 			if (answer)
 				{
-				System.out.println("position3");
 				// receive how many messages
 				int numMsg = dis.readInt();
 				System.out.println("You have " + numMsg + " incoming messages.");
