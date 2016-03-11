@@ -92,7 +92,7 @@ public class MailServer {
 		ByteBuffer bb = ByteBuffer.allocate(16);
 		bb.put(userid.getBytes());
 		bb.putLong(t1);
-		//bb.putDouble(q1);
+
 		
 
         // should actually retrieve the appropriate key file using the received user name. For simplicity, hardcoded here

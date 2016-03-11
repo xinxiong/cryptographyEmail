@@ -42,12 +42,11 @@ public class MailClient {
 	        
 	        // create timeStamp and random number
 	        long t1 = (new Date()).getTime();
-	        //double q1 = Math.random();
 	        // ByteBuffer to convert to bytes later
 	        ByteBuffer bb = ByteBuffer.allocate(16);
 	        bb.putLong(t1);
 	        bb.put(userid.getBytes());
-	        //bb.putDouble(q1);
+
 	
 	        // create signature, using timeStamp and random number as data
 	        Signature sig = Signature.getInstance("SHA1withRSA");
@@ -56,19 +55,14 @@ public class MailClient {
 	        byte[] signature = sig.sign();
 	
 	        // send data and signature
-	        //dos.writeUTF(userid);
 	        dos.writeLong(t1);
-	        //dos.writeDouble(q1);
 	        dos.writeInt(signature.length);
 	        System.out.println("in the client,the length of signature is :"+signature.length);
 	        dos.write(signature);
 	        dos.flush();
-	        
-	        System.out.println("client position1");
 
 			boolean answer = dis.readBoolean();
 			
-			System.out.println("position2");
 			System.out.println(answer);
 			//passed the verifyLogin
 			if (answer)
@@ -86,7 +80,7 @@ public class MailClient {
 				}
 				while(!msg.isEmpty()){
 					System.out.println("position4");
-					//for each mail, display sender,timestamp,message
+					//for each mail, display sender,timeStamp,message
 					System.out.println(msg.get(0).sender);
 					System.out.println(msg.get(0).timestamp);
 					System.out.println(msg.get(0).message);
@@ -96,7 +90,7 @@ public class MailClient {
 					byte[] digest = md.digest();
 					boolean normalMail = msg.get(0).checkHashcash(digest);
 					if(normalMail){
-					//check each mail is original that it isn't modified
+					//check each mail is belongs to SPAM or not
 					//receive mail
 						System.out.println(msg.get(0).message);
 						}
@@ -137,10 +131,7 @@ public class MailClient {
 				// send timeStamp and digest to server
 				long mailTimestamp = m.timestamp.getTime();
 				dos.writeLong(mailTimestamp);
-				
 
-
-				
 				oos.writeObject(m);
 				
 				}
